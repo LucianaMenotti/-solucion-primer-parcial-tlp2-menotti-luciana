@@ -14,8 +14,6 @@ export const technologyRoutes = Router();
 
 technologyRoutes.post(
   "/technologies",
-  authMiddleware,
-  adminMiddleware,
   createTechnologyValidation,
   validator,
   createTechnology

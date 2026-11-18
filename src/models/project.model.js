@@ -38,7 +38,7 @@ export const ProjectModel = sequelize.define("Project", {
   // TODO: 7. leader_id: entero, obligatorio, clave foránea hacia User.
   leader_id: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: false,
     references: {
       model: "Users", // Nombre de la tabla en la BD (pluralizado por defecto)
       key: "id",

@@ -2,12 +2,27 @@
 import { UserModel, ProfileModel } from "../models/index.js";
 import { hashPassword, comparePassword } from "../helpers/bcrypt.helper.js";
 import { signToken } from "../helpers/jwt.helper.js";
+import { matchedData } from "express-validator";
 
 export const register = async (req, res) => {
   try {
+    const {profile, password,...data} = matchedData(req)
     // TODO: 1. Hashear la password antes de guardarla (hashPassword).
+
+    const hashedPassword = await hashPassword(password)
+
+    //console.log(hashedPassword)
     // TODO: 2. Crear el user y su profile asociado.
+
+    const newUser = await UserModel.create({...data,password : hashedPassword})
+
+    await ProfileModel.create({...profile,user_id: newUser.id})
+
     // TODO: 3. Responder con código 201, un mensaje de éxito y devolver el usuario sin la password.
+    return res.status(201).json({
+      message:"se creo correctamente el usuario",
+      user:{username:newUser.username,email:newUser.email, role: newUser.role}
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Error interno del servidor" });
