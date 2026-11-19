@@ -15,23 +15,43 @@ import {
   createProjectValidation,
   updateProjectValidation,
 } from "../middlewares/validations/project.validation.js";
+import { ValidatorsImpl } from "express-validator/lib/chain/validators-impl.js";
 
 export const projectRoutes = Router();
 
 // TODO: 1. Decidir y aplicar los middlewares que correspondan a cada ruta.
 
 // ? Crear un proyecto: requiere sesión iniciada y datos válidos.
-projectRoutes.post("/projects",createProjectValidation, validator, createProject);
-
+projectRoutes.post(
+  "/projects",
+  createProjectValidation,
+  validator,
+  createProject,
+);
 
 // ? Listar todos los proyectos: solo administrator.
-projectRoutes.get("/projects", getAllProjects);
+projectRoutes.get("/projects", adminMiddleware, validator, getAllProjects);
 
 // ? Listar los proyectos del usuario logueado: requiere sesión iniciada.
-projectRoutes.get("/projects/my-projects", getMyProjects);
+projectRoutes.get(
+  "/projects/my-projects",
+  authMiddleware,
+  validator,
+  getMyProjects,
+);
 
 // ? Editar un proyecto: solo su líder y con datos válidos.
-projectRoutes.put("/projects/:id",updateProjectValidation, validator,  updateProject);
+projectRoutes.put(
+  "/projects/:id",
+  updateProjectValidation,
+  validator,
+  updateProject,
+);
 
 // ? Eliminar un proyecto: solo su líder.
-projectRoutes.delete("/projects/:id", deleteProject);
+projectRoutes.delete(
+  "/projects/:id",
+  leaderMiddleware,
+  validator,
+  deleteProject,
+);
